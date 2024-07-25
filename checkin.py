@@ -13,9 +13,10 @@ new row every day
 from datetime import datetime as dt
 import os
 import openpyxl
-import pandas
+
 import re
 import dearpygui.dearpygui as dpg
+
 
 class CheckIn:
 
@@ -49,9 +50,10 @@ class CheckIn:
                         "Any additional comments?" : self.comments
                        }
         
-        self.show_gui()
+        #self.show_gui()
 
     def input_str_to_bool(self, string : str):
+
         if re.search(r"[+Y][+E]*[S|ah|t]", string, re.IGNORECASE):
             return True
         elif re.search(r"[+N][+O]*[p|e]", string, re.IGNORECASE):
@@ -60,18 +62,23 @@ class CheckIn:
     #completed 1:16 pm
 
     def input_time(self, string : str):
+
         time = input(string)
         x = dt.strptime(time, r"%I:%M %p")
         return x
 
-
     def get_formatted_current_datetime(self):
+
         time = dt.now()
         current_date = dt.now().strftime(r"%B %d, %Y")
         current_time = dt.now().strftime(r"%I:%M %p")
         
         return current_date, current_time
 
+    def format_input_datetime(self, input_dt):
+
+        formatted_time = input_dt.strptime(r"%I:%M %p") #string parse time; str -> time
+        return formatted_time
     """
     The main script must always:
 
@@ -88,32 +95,8 @@ class CheckIn:
     Clean up the context destroy_context
     """
 
-   
-
-    def button_callback(sender, app_data, user_data):
-        #print(f"sender is: {sender}")
-        #print(f"app_data is: {app_data}")
-        #print(f"user_data is: {user_data}")
-        return sender, app_data, user_data
-
     
-        #dpg.add_checkbox(callback=)
-    def show_gui(self):
         
-        dpg.create_context() #needs to be explicitly done every time
-        with dpg.window(label="Example 2 Window"):
-            b77 = dpg.add_text("Welcome!")
-            x = dpg.get_item_state(b77)
-            dpg.add_button(label="Begin")
-            dpg.add_input_text(label="string", default_value="Quick brown fox")
-            dpg.add_slider_float(tag = "slide", label="Bloat", default_value=2.73, max_value=10, callback= self.button_callback)
-
-        dpg.create_viewport(title='Checkin-inator', width=600, height=300)
-        dpg.setup_dearpygui()
-        dpg.show_viewport()
-        dpg.start_dearpygui()
-        dpg.destroy_context()
-
 
 def __main__():
     chk = CheckIn()

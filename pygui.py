@@ -1,53 +1,113 @@
 import dearpygui.dearpygui as dpg
 import checkin
 
-dpg.create_context()
+class InatorGUI: 
 
-def change_text(sender, app_data):
-    dpg.set_value("text item", f"Mouse Button ID: {app_data}")
+    def __init__(self):
+        self.chk = checkin.CheckIn()
+        self.main()
+        """self.vars = [sleep_time, wakeup_time, if_sleepy, bfast_time, bfast,
+                     if_bloated, if_headache, headache_intensity, coffee, 
+                    coffee_intensity, if_palpitation, comments]
+"""
+    def change_text(self, sender, app_data):
+        dpg.set_value("text item", f"Mouse Button ID: {app_data}")
 
-def visible_call(sender, app_data):
-    #print("I'm visible")
+    def visible_call(self, sendeSr, app_data):
+        #print("I'm visible")
+        return
+
+    # The callback argument in add_button takes the name of a function which will execute everytime you press that button.
+    # “user_data” is the input you want to give to the button everytime its pressed.
+    def on_submit_button_press(self, sender, app_data, user_data):
+        print("Callback")
+        var_list = [dpg.get_value(i) for i in user_data]
+        #print(var_list)
+        for i, key in enumerate(self.chk.params):
+            self.chk.params[key] = var_list[i]
+
+        #print(self.chk.params.items())
+       
+        return [dpg.get_value(i) for i in user_data]
+    
+    def main(self):
+
+        dpg.create_context()
+        with dpg.window(label = "Checkin", height= 600, width = 550, no_collapse=True, no_resize=True) as window1:
+            with dpg.group(horizontal=True):
+                dpg.add_text("Time Slept")
+                sleep_time = dpg.add_input_text( no_spaces= True,label= "",  tag = "Time Field 1", tracked = True)
+                day_half = dpg.add_combo(["AM", "PM"], default_value= "AM", width= 40)
+            
+            with dpg.group(horizontal=True):
+                dpg.add_text("Time Woken Up")
+                wakeup_time = dpg.add_input_text(no_spaces= True,  tag = "Time Field 2", tracked = True)
+                day_half = dpg.add_combo(["AM", "PM"], default_value= "AM", width= 40)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Still Sleepy?")
+                if_sleepy = dpg.add_input_text(no_spaces= True, tag = "Bool Field 1", tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Breakfast Time")
+                bfast_time = dpg.add_input_text(no_spaces= True, tag = "Time Field 3", tracked = True)
+                day_half = dpg.add_combo(["AM", "PM"], default_value= "AM", width= 40)
+            
+            with dpg.group(horizontal=True):
+                dpg.add_text("Breakfast Items")
+                bfast = dpg.add_input_text(no_spaces= False, hint = "eg. Cereal, Vegetables, Maggi", tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Bloated?")
+                if_bloated = dpg.add_input_text(no_spaces= True, label = "      ", tag = "Bool Field 2" , tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Headache?")
+                if_headache = dpg.add_input_text(no_spaces= True, tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Headache Intensity")
+                headache_intensity = dpg.add_input_int(tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Coffee?")
+                coffee = dpg.add_input_text(no_spaces= True, tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Coffee Strength")
+                coffee_intensity = dpg.add_input_int( tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Palpitations?")
+                if_palpitation = dpg.add_input_text(no_spaces= True, tracked = True)
+
+            with dpg.group(horizontal=True):
+                dpg.add_text("Additional Comments")
+                comments = dpg.add_input_text(hint = " ", multiline = True, tracked = True)
+
+            dpg.add_button(label = "Save", tag = "Print Button",  user_data= [sleep_time, wakeup_time, if_sleepy, bfast_time, bfast,
+                                                                                if_bloated, if_headache, headache_intensity, coffee, 
+                                                                                coffee_intensity, if_palpitation, comments], 
+                                                                                callback= self.on_submit_button_press)
+            w = dpg.get_item_width(window1)
+            h = dpg.get_item_height(window1)
+            
+            
+        
+
+        # so either i use callback = func() within the element initialization or use a registry and bind it explicitly
+        dpg.create_viewport(title= f'CheckinInator', width= w, height= h, resizable = False, clear_color= (0,0,0))
+        dpg.setup_dearpygui()
+        dpg.show_viewport()
+        dpg.start_dearpygui()
+        dpg.destroy_context()
+
+        return
+
+def __main__():
     return
-
-def store_on_button_press(sender, app_data, user_data):
-    print("yes")
-    print(dpg.get_value(user_data[0]))
-    x = dpg.get_value(user_data[0])
-    return x
-    #print({user_data})
-    
-with dpg.window(width=1000, height=1000, pos = [0,0]):
-    dpg.add_text("Click me with any mouse button", tag="text item")
-    b7 = dpg.add_button(label = "Clicky", tag = "submit button")
-    dpg.add_text("Close window with arrow to change visible state printing to console", tag="text item 2")
-    x = dpg.add_input_float(label = "X")
-    dpg.add_button(label="Print", callback= store_on_button_press , user_data=[x])
-
-# The callback argument in add_button takes the name of a function which will execute everytime you press that button.
-# “user_data” is the input you want to give to the button everytime its pressed.
-    
-   
-print("This is x: " + str(store_on_button_press))
-    
-    
-with dpg.item_handler_registry(tag="widget handler") as handler:
-    dpg.add_item_clicked_handler(callback=change_text)
-    dpg.add_item_visible_handler(callback=visible_call)
-
-with dpg.item_handler_registry(tag= "submit button handler") as handler:
-    dpg.add_item_clicked_handler(callback = store_on_button_press)
-
-
-# bind item handler registry to item
-dpg.bind_item_handler_registry("submit button", "submit button handler")
-dpg.bind_item_handler_registry("text item 2", "widget handler")
-
-dpg.create_viewport(title='Custom Title', width=800, height=600)
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.start_dearpygui()
-dpg.destroy_context()
-
-chk = checkin.CheckIn()
-print(chk.bfast)
+    #gui = InatorGUI()
+if __name__ == "__main__":
+    __main__()
+#gui.main()
+#print(gui.chk.params.items())
