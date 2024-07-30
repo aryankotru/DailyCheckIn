@@ -22,23 +22,25 @@ class CheckIn:
 
     def __init__(self):
         
-        self.sleep_time : dt = dt.now()
-        self.wakeup_time : dt = dt.now()
+        self.sleep_time = "11:30"
+        self.wakeup_time = "11:30"
         self.if_sleepy : bool = True
-        self.bfast_time : dt = dt.now()
-        self.bfast : list = []
+        self.bfast_time = "11:30"
+        self.bfast : list = ["Breakfast"]
         self.if_bloated : bool =  True
         self.if_headache: bool =  True
         self.headache_intensity: float = 0.0
         self.coffee : bool = True
         self.coffee_strength: float = 0.0
         self.if_palpitation: bool =  True
-        self.comments : str =  ""
+        self.comments : str =  "N/A"
+        self.time_period = ["AM", "AM", "AM"]
 
 
-        self.params = { "Time Slept" : self.sleep_time, 
-                        "Still Sleepy?" : self.if_sleepy, 
+        self.params = { "Date" : dt.now().date().strftime(r"%d-%m-%Y"),
+                        "Time Slept" : self.sleep_time, 
                         "Wake up Time" : self.wakeup_time, 
+                        "Still Sleepy?" : self.if_sleepy, 
                         "Breakfast Time" : self.bfast_time, 
                         "What did I have for breakfast?" : self.bfast, 
                         "Bloated?" : self.if_bloated, 
@@ -49,16 +51,17 @@ class CheckIn:
                         "Palpitation?" : self.if_palpitation, 
                         "Any additional comments?" : self.comments
                        }
-        
+        #print(self.params)
         #self.show_gui()
 
-    def input_str_to_bool(self, string : str):
-
-        if re.search(r"[+Y][+E]*[S|ah|t]", string, re.IGNORECASE):
+    def input_str_to_bool(self, string):
+        if string == True:
             return True
-        elif re.search(r"[+N][+O]*[p|e]", string, re.IGNORECASE):
+        if re.search(r"[Y]+[E|U]+[S|ah|t]*", string, re.IGNORECASE):
+            return True
+        elif re.search(r"[N]+[O]+[p|e]*", string, re.IGNORECASE):
             return False
-        raise ValueError("Value must be Positive or Negative. Try yes or no.")
+        raise ValueError("Value must be Positive or Negative. Try variants of Yes or No.")
     #completed 1:16 pm
 
     def input_time(self, string : str):
@@ -99,8 +102,9 @@ class CheckIn:
         
 
 def __main__():
-    chk = CheckIn()
-    print(chk.bfast)
+
+    
+    
     return
 
 if __name__ == "__main__":
